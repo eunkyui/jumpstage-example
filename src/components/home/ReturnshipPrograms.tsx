@@ -2,40 +2,13 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { CalendarIcon, AcademicCapIcon, UserGroupIcon } from '@heroicons/react/24/outline'
-
-type ProgramProps = {
-  id: string
-  title: string
-  company: string
-  period: string
-  features: string[]
-  conversionRate: string
-  deadline: string
-}
-
-const programs: ProgramProps[] = [
-  {
-    id: '1',
-    title: '디지털 마케팅 리턴십',
-    company: '테크컴퍼니',
-    period: '2024.04 - 2024.07',
-    features: ['교육지원금 제공', '멘토링 지원', '전환채용 가능'],
-    conversionRate: '80%',
-    deadline: 'D-14'
-  },
-  {
-    id: '2',
-    title: '프론트엔드 개발자 리턴십',
-    company: '소프트랩',
-    period: '2024.05 - 2024.08',
-    features: ['실무 프로젝트', '유연근무', '자기개발 지원'],
-    conversionRate: '75%',
-    deadline: 'D-21'
-  }
-]
+import { returnshipPrograms } from '@/data/returnshipPrograms'
+import { CalendarIcon, AcademicCapIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline'
 
 export default function ReturnshipPrograms() {
+  // 최신 3개의 리턴십 프로그램만 표시
+  const featuredPrograms = returnshipPrograms.slice(0, 3)
+
   return (
     <section className="bg-gray-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -49,7 +22,7 @@ export default function ReturnshipPrograms() {
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {programs.map((program) => (
+          {featuredPrograms.map((program) => (
             <div key={program.id} className="bg-white rounded-lg shadow-sm border p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
@@ -66,6 +39,10 @@ export default function ReturnshipPrograms() {
                   <span>{program.period}</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
+                  <BuildingOfficeIcon className="w-5 h-5" />
+                  <span>{program.location}</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-600">
                   <AcademicCapIcon className="w-5 h-5" />
                   <span>전환채용률 {program.conversionRate}</span>
                 </div>
@@ -73,7 +50,6 @@ export default function ReturnshipPrograms() {
               <div className="space-y-2">
                 {program.features.map((feature) => (
                   <div key={feature} className="flex items-center gap-2">
-                    <UserGroupIcon className="w-4 h-4 text-primary" />
                     <span className="text-sm">{feature}</span>
                   </div>
                 ))}

@@ -1,12 +1,16 @@
 'use client'
 
 import React from 'react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { getReturnshipById } from '@/data/returnshipPrograms'
 import {
   CalendarIcon,
   AcademicCapIcon,
   BuildingOfficeIcon,
   UserGroupIcon,
+  ClockIcon,
+  MapPinIcon,
+  BanknotesIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline'
 
@@ -14,81 +18,15 @@ type PageProps = {
   params: {
     id: string;
   };
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
-
-type ReturnshipDetail = {
-  id: string
-  title: string
-  company: string
-  period: string
-  location: string
-  deadline: string
-  description: string
-  curriculum: {
-    title: string
-    duration: string
-    details: string[]
-  }[]
-  requirements: string[]
-  benefits: string[]
-  conversionRate: string
-  companyInfo: {
-    name: string
-    size: string
-    industry: string
-    description: string
-  }
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export default function ReturnshipDetailPage({ params }: PageProps) {
-  // TODO: API로 데이터 가져오기
-  const program: ReturnshipDetail = {
-    id: params.id,
-    title: '디지털 마케팅 리턴십',
-    company: '테크컴퍼니',
-    period: '2024.04 - 2024.07 (3개월)',
-    location: '서울 강남구',
-    deadline: 'D-14',
-    description: '디지털 마팅의 A to Z를 배우고 실무에 적용하는 기회',
-    curriculum: [
-      {
-        title: '기초 교육 과정',
-        duration: '1개월',
-        details: [
-          '디지털 마케팅 개요',
-          '데이터 분석 기초',
-          '마케팅 채널 이해'
-        ]
-      },
-      {
-        title: '실무 프로젝트',
-        duration: '2개월',
-        details: [
-          '실제 캠페인 기획 및 운영',
-          '성과 분석 및 리포팅',
-          '팀 프로젝트 수행'
-        ]
-      }
-    ],
-    requirements: [
-      '마케팅 경력 3년 이상',
-      '데이터 분석 툴 사용 경험',
-      '커뮤니케이션 능력'
-    ],
-    benefits: [
-      '교육지원금 월 200만원',
-      '수료 후 정규직 전환 기회',
-      '멘토링 프로그램',
-      '자기개발비 지원'
-    ],
-    conversionRate: '80%',
-    companyInfo: {
-      name: '테크컴퍼니',
-      size: '100-200명',
-      industry: 'IT/소프트웨어',
-      description: '혁신적인 디지털 솔루션을 제공하는 기업'
-    }
+  const router = useRouter()
+  const program = getReturnshipById(params.id)
+
+  if (!program) {
+    return <div>Program not found</div>
   }
 
   return (
@@ -109,22 +47,42 @@ export default function ReturnshipDetailPage({ params }: PageProps) {
               <span>{program.period}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
-              <BuildingOfficeIcon className="w-5 h-5" />
+              <MapPinIcon className="w-5 h-5" />
               <span>{program.location}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
               <AcademicCapIcon className="w-5 h-5" />
               <span>전환채용률 {program.conversionRate}</span>
             </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <BanknotesIcon className="w-5 h-5" />
+              <span>지원금 {program.programDetails.supportAmount}</span>
+            </div>
           </div>
         </div>
 
-        {/* 프로그램 설명 */}
+        {/* 프로그램 소개 */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
           <h2 className="text-xl font-bold mb-4">프로그램 소개</h2>
-          <p className="text-gray-700 whitespace-pre-line">
+          <p className="text-gray-700 whitespace-pre-line mb-6">
             {program.description}
           </p>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+              <ClockIcon className="w-5 h-5 text-primary" />
+              <div>
+                <p className="font-medium">교육 기간</p>
+                <p className="text-sm text-gray-600">{program.programDetails.educationPeriod}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+              <ClockIcon className="w-5 h-5 text-primary" />
+              <div>
+                <p className="font-medium">인턴십 기간</p>
+                <p className="text-sm text-gray-600">{program.programDetails.internshipPeriod}</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* 커리큘럼 */}
@@ -151,49 +109,64 @@ export default function ReturnshipDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* 지원 자격 */}
+        {/* 멘토링 */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-xl font-bold mb-4">지원 자격</h2>
-          <ul className="space-y-2">
-            {program.requirements.map((req, index) => (
-              <li key={index} className="flex items-center gap-2 text-gray-700">
-                <CheckCircleIcon className="w-4 h-4 text-primary" />
-                {req}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* 지원 혜택 */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-xl font-bold mb-4">지원 혜택</h2>
-          <div className="grid grid-cols-2 gap-4">
-            {program.benefits.map((benefit, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg"
-              >
-                <UserGroupIcon className="w-5 h-5 text-primary" />
-                <span className="text-gray-700">{benefit}</span>
+          <h2 className="text-xl font-bold mb-4">멘토링 프로그램</h2>
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="font-medium">멘토링 일정</p>
+                <p className="text-gray-600">{program.mentoring.schedule}</p>
               </div>
-            ))}
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="font-medium">멘토링 방식</p>
+                <p className="text-gray-600">{program.mentoring.type}</p>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <h3 className="font-medium">멘토 소개</h3>
+              {program.mentoring.mentors.map((mentor, index) => (
+                <div key={index} className="border p-4 rounded-lg">
+                  <div className="flex justify-between mb-2">
+                    <div>
+                      <p className="font-medium">{mentor.name}</p>
+                      <p className="text-sm text-gray-600">{mentor.position}</p>
+                      <p className="text-sm text-gray-600">{mentor.company}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {mentor.expertise.map((exp, idx) => (
+                      <span
+                        key={idx}
+                        className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+                      >
+                        {exp}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* 회사 정보 */}
+        {/* 선발 과정 */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-xl font-bold mb-4">회사 소개</h2>
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <BuildingOfficeIcon className="w-12 h-12 text-gray-400" />
-              <div>
-                <h3 className="font-bold">{program.companyInfo.name}</h3>
-                <p className="text-gray-600">{program.companyInfo.industry}</p>
+          <h2 className="text-xl font-bold mb-6">선발 과정</h2>
+          <div className="flex justify-between items-center">
+            {program.process.selectionProcess.map((step, index) => (
+              <div key={index} className="flex items-center">
+                <div className="flex flex-col items-center">
+                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+                    {index + 1}
+                  </div>
+                  <p className="text-sm mt-2">{step}</p>
+                </div>
+                {index < program.process.selectionProcess.length - 1 && (
+                  <div className="h-[2px] w-12 bg-gray-200 mx-2" />
+                )}
               </div>
-            </div>
-            <p className="text-gray-700">
-              {program.companyInfo.description}
-            </p>
+            ))}
           </div>
         </div>
 

@@ -6,10 +6,30 @@ import {
   DocumentTextIcon,
   AcademicCapIcon,
   StarIcon,
-  ChatBubbleLeftRightIcon
+  ChatBubbleLeftRightIcon,
+  ClipboardDocumentListIcon
 } from '@heroicons/react/24/outline'
 
-type ProfileSection = 'info' | 'career' | 'education' | 'skills' | 'reviews'
+type ProfileSection = 'info' | 'career' | 'education' | 'skills' | 'reviews' | 'returnship'
+
+type ReturnshipStatus = {
+  id: string
+  programName: string
+  company: string
+  period: string
+  status: 'in_progress' | 'completed' | 'pending'
+  progress: {
+    current: number
+    total: number
+    nextTask?: string
+    nextDue?: string
+  }
+  mentor?: {
+    name: string
+    position: string
+    nextMeeting?: string
+  }
+}
 
 export default function ProfilePage() {
   const [activeSection, setActiveSection] = useState<ProfileSection>('info')
@@ -26,6 +46,8 @@ export default function ProfilePage() {
         return <Skills />
       case 'reviews':
         return <Reviews />
+      case 'returnship':
+        return <ReturnshipProgress />
       default:
         return null
     }
@@ -60,6 +82,7 @@ export default function ProfilePage() {
               { id: 'education', label: '학력/교육', icon: AcademicCapIcon },
               { id: 'skills', label: '보유 스킬', icon: StarIcon },
               { id: 'reviews', label: '동료 리뷰', icon: ChatBubbleLeftRightIcon },
+              { id: 'returnship', label: '리턴십 현황', icon: ClipboardDocumentListIcon },
             ].map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
@@ -317,6 +340,119 @@ function Reviews() {
                 </span>
               ))}
             </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function ReturnshipProgress() {
+  const returnships: ReturnshipStatus[] = [
+    {
+      id: '1',
+      programName: '디지털 마케팅 리턴십',
+      company: '테크컴퍼니',
+      period: '2024.04 - 2024.07',
+      status: 'in_progress',
+      progress: {
+        current: 2,
+        total: 6,
+        nextTask: '디지털 광고 실습',
+        nextDue: '2024.05.15'
+      },
+      mentor: {
+        name: '김멘토',
+        position: '마케팅 팀장',
+        nextMeeting: '2024.05.10 14:00'
+      }
+    },
+    {
+      id: '2',
+      programName: 'UX 디자인 리턴십',
+      company: '디자인허브',
+      period: '2024.01 - 2024.03',
+      status: 'completed',
+      progress: {
+        current: 6,
+        total: 6
+      }
+    }
+  ]
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-bold">리턴십 진행 현황</h2>
+      </div>
+
+      <div className="space-y-6">
+        {returnships.map((program) => (
+          <div key={program.id} className="border rounded-lg p-6">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className="font-bold text-lg">{program.programName}</h3>
+                <p className="text-gray-600">{program.company}</p>
+                <p className="text-sm text-gray-500">{program.period}</p>
+              </div>
+              <span className={`px-3 py-1 rounded-full text-sm ${
+                program.status === 'in_progress'
+                  ? 'bg-primary/10 text-primary'
+                  : program.status === 'completed'
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-gray-100 text-gray-800'
+              }`}>
+                {program.status === 'in_progress' ? '진행중'
+                  : program.status === 'completed' ? '수료완료'
+                  : '대기중'}
+              </span>
+            </div>
+
+            {program.status === 'in_progress' && (
+              <>
+                <div className="mb-4">
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>진행률</span>
+                    <span>{Math.round((program.progress.current / program.progress.total) * 100)}%</span>
+                  </div>
+                  <div className="h-2 bg-gray-200 rounded-full">
+                    <div
+                      className="h-full bg-primary rounded-full"
+                      style={{ width: `${(program.progress.current / program.progress.total) * 100}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4 border-t pt-4">
+                  {program.progress.nextTask && (
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-700">다음 과제</h4>
+                      <p className="text-gray-600">{program.progress.nextTask}</p>
+                      <p className="text-sm text-primary">마감일: {program.progress.nextDue}</p>
+                    </div>
+                  )}
+
+                  {program.mentor && (
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-700">멘토링</h4>
+                      <p className="text-gray-600">{program.mentor.name} ({program.mentor.position})</p>
+                      {program.mentor.nextMeeting && (
+                        <p className="text-sm text-primary">다음 미팅: {program.mentor.nextMeeting}</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+
+            {program.status === 'completed' && (
+              <div className="mt-4 pt-4 border-t">
+                <p className="text-gray-600">프로그램을 성공적으로 수료했습니다.</p>
+                <button className="mt-2 text-primary hover:text-primary-dark text-sm">
+                  수료증 다운로드
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </div>

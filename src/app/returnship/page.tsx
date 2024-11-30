@@ -1,101 +1,21 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import {
   CalendarIcon,
   AcademicCapIcon,
   BuildingOfficeIcon,
   AdjustmentsHorizontalIcon
 } from '@heroicons/react/24/outline'
-
-type Program = {
-  id: string
-  title: string
-  company: string
-  period: string
-  location: string
-  features: string[]
-  conversionRate: string
-  deadline: string
-  description: string
-  requirements: string[]
-}
+import { returnshipPrograms } from '@/data/returnshipPrograms'
 
 const FILTER_OPTIONS = {
-  field: ['개발', '마케팅', '디자인', '기획/PM', '영업/세일즈'],
-  period: ['3개월', '6개월', '1년'],
+  field: ['개발', '마케팅', '디자인', '기획/PM', 'HR'],
+  duration: ['3개월', '6개월', '1년'],
   location: ['서울', '경기', '인천', '부산', '대구', '기타'],
-  benefits: ['교육지원금', '전환채용가능', '멘토링지원', '자기개발지원']
+  features: ['교육지원금', '전환채용가능', '멘토링지원', '자기개발지원']
 }
-
-const programs = [
-  {
-    id: '1',
-    title: '디지털 마케팅 리턴십',
-    company: '테크컴퍼니',
-    period: '2024.04 - 2024.07',
-    location: '서울 강남구',
-    features: ['교육지원금', '멘토링', '전환채용가능'],
-    conversionRate: '80%',
-    deadline: 'D-14',
-    field: '마케팅'
-  },
-  {
-    id: '2',
-    title: '프론트엔드 개발자 리턴십',
-    company: '소프트랩',
-    period: '2024.05 - 2024.08',
-    location: '서울 성동구',
-    features: ['실무 프로젝트', '유연근무', '자기개발지원'],
-    conversionRate: '75%',
-    deadline: 'D-21',
-    field: '개발'
-  },
-  {
-    id: '3',
-    title: 'UX/UI 디자이너 리턴십',
-    company: '디자인허브',
-    period: '2024.03 - 2024.06',
-    location: '경기 판교',
-    features: ['포트폴리오 지원', '재택근무', '육아지원'],
-    conversionRate: '85%',
-    deadline: 'D-7',
-    field: '디자인'
-  },
-  {
-    id: '4',
-    title: '데이터 분석가 리턴십',
-    company: '데이터테크',
-    period: '2024.06 - 2024.09',
-    location: '서울 마포구',
-    features: ['자격증 취득지원', '유연근무', '전환채용가능'],
-    conversionRate: '70%',
-    deadline: 'D-30',
-    field: '데이터'
-  },
-  {
-    id: '5',
-    title: 'HR 매니저 리턴십',
-    company: '피플파트너스',
-    period: '2024.04 - 2024.08',
-    location: '서울 서초구',
-    features: ['실무교육', '멘토링', '육아지원'],
-    conversionRate: '90%',
-    deadline: 'D-10',
-    field: '인사'
-  },
-  {
-    id: '6',
-    title: '회계/재무 리턴십',
-    company: '파이낸스그룹',
-    period: '2024.05 - 2024.09',
-    location: '서울 영등포구',
-    features: ['자격증 취득지원', '유연근무', '전환채용가능'],
-    conversionRate: '85%',
-    deadline: 'D-17',
-    field: '재무'
-  }
-]
 
 export default function ReturnshipPage() {
   const [activeFilters, setActiveFilters] = useState<string[]>([])
@@ -146,9 +66,9 @@ export default function ReturnshipPage() {
                 <div key={category} className="border-t pt-4">
                   <h3 className="font-medium mb-2">
                     {category === 'field' && '직무분야'}
-                    {category === 'period' && '교육기간'}
+                    {category === 'duration' && '교육기간'}
                     {category === 'location' && '교육장소'}
-                    {category === 'benefits' && '지원혜택'}
+                    {category === 'features' && '지원혜택'}
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {options.map(option => (
@@ -179,8 +99,12 @@ export default function ReturnshipPage() {
 
         {/* 프로그램 목록 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {programs.map(program => (
-            <div key={program.id} className="bg-white rounded-lg shadow p-6">
+          {returnshipPrograms.map((program) => (
+            <Link
+              href={`/returnship/${program.id}`}
+              key={program.id}
+              className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+            >
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-xl font-bold">{program.title}</h3>
@@ -202,17 +126,17 @@ export default function ReturnshipPage() {
                   <span>전환채용률 {program.conversionRate}</span>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {program.features.map(feature => (
-                  <span key={feature} className="px-2 py-1 rounded-full bg-primary/10 text-primary text-xs">
+              <div className="flex flex-wrap gap-2">
+                {program.features.map((feature) => (
+                  <span
+                    key={feature}
+                    className="px-2 py-1 rounded-full bg-primary/10 text-primary text-xs"
+                  >
                     {feature}
                   </span>
                 ))}
               </div>
-              <button className="w-full py-2 bg-primary text-white rounded-md hover:bg-primary-dark">
-                상세보기
-              </button>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

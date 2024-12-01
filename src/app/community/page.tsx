@@ -154,7 +154,7 @@ export default function CommunityPage() {
         <section className="bg-white rounded-lg shadow-sm p-8 mb-8">
           <h1 className="text-3xl font-bold mb-4">커뮤니티</h1>
           <p className="text-gray-600 mb-6">
-            경력 단절 여성들의 이야기를 나누고, 함께 성장하는 공간입니다.
+            서로 의견을 나누고, 함께 성장하는 공간입니다.
             성공 스토리를 공유하고, 스터디에 참여하며, 새로운 네트워크를 만들어보세요.
           </p>
           <button className="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary-dark">

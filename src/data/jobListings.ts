@@ -303,8 +303,8 @@ export const jobListings: JobListing[] = [
     workHours: '주 20시간',
     salary: '시급 35,000원',
     deadline: 'D-17',
-    badges: ['유연근무', '경력단절우대', '자기개발지원'],
-    description: '회계 및 재무 관리 업무를 담당할 전문가를 모십니다. 경력 단절 여성을 우대합니다.',
+    badges: ['유연근무', '경력보유우대', '자기개발지원'],
+    description: '회계 및 재무 관리 업무를 담당할 전문가를 모십니다. 경력 보유 여성을 우대합니다.',
     requirements: [
       '회계/재무 분야 3년 이상 경력',
       '재무제표 분석 능력',
@@ -435,7 +435,7 @@ export const jobListings: JobListing[] = [
     workHours: '주 25시간',
     salary: '시급 40,000원',
     deadline: 'D-8',
-    badges: ['육아지원', '경력단절우대', '유연근무'],
+    badges: ['육아지원', '경력보유우대', '유연근무'],
     description: '채용과 인사관리를 담당할 HR 매니저를 모십니다.',
     requirements: [
       '인사 관련 3년 이상 경력',

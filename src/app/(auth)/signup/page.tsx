@@ -154,7 +154,7 @@ export default function SignUpPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  경력 단절 기간
+                  경력 보유 기간
                 </label>
                 <select
                   value={formData.breakPeriod}

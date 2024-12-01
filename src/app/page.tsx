@@ -10,12 +10,12 @@ export default function Home() {
     <>
       <section className="bg-gradient-to-r from-purple-600 to-pink-500 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold mb-6">
-            경력의 새로운 도약을 위한 첫걸음
+          <h1 className="text-3xl sm:text-4xl font-bold mb-6">
+            핵심인재와 가족친화기업을 연결하여 희망을 만듭니다
           </h1>
-          <p className="text-xl mb-8">
-            경력 단절 없는 성장을 위한 최적의 플랫폼
-          </p>
+          <h2 className="text-2xl mb-8">
+            유연 근무는 JUMP Stage 에서 시작하세요
+          </h2>
           <div className="flex justify-center gap-4">
             <Link
               href="/jobs"

@@ -28,7 +28,7 @@ export default function ReturnshipPage() {
         <section className="bg-gradient-to-r from-primary to-secondary text-white rounded-lg p-8 mb-8">
           <h1 className="text-3xl font-bold mb-4">리턴십 프로그램</h1>
           <p className="text-lg mb-6">
-            경력 단절 여성을 위한 맞춤형 교육과 실무 경험을 제공하는 프로그램입니다.
+            경력 보유 여성을 위한 맞춤형 교육과 실무 경험을 제공하는 프로그램입니다.
             전문 멘토링과 함께 실무 프로젝트에 참여하며 자신감을 되찾으세요.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

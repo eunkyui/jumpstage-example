@@ -107,21 +107,6 @@ export default function ProfilePage() {
         <div className="bg-white rounded-lg shadow-sm p-6">
           {renderSection()}
         </div>
-
-        {activeTab === 'reviews' && (
-          <div className="mt-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">동료 리뷰</h2>
-              <Link
-                href="/profile/verify"
-                className="text-primary hover:text-primary-dark"
-              >
-                리뷰 요청하기
-              </Link>
-            </div>
-            {/* 기존 리뷰 관련 내용 */}
-          </div>
-        )}
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { getJobById } from '@/data/jobListings'
 import {
@@ -10,6 +10,7 @@ import {
   BanknotesIcon,
   UserGroupIcon
 } from '@heroicons/react/24/outline'
+import ApplyCompleteModal from '@/components/common/modal/ApplyCompleteModal'
 
 type PageProps = {
   params: {
@@ -21,9 +22,25 @@ type PageProps = {
 export default function JobDetailPage({ params }: PageProps) {
   const router = useRouter()
   const job = getJobById(params.id)
+  const [isApplyComplete, setIsApplyComplete] = useState(false)
 
   if (!job) {
     return <div>Job not found</div>
+  }
+
+  const handleApply = async () => {
+    try {
+      // 지원 API 호출
+      await fetch('/api/jobs/apply', {
+        method: 'POST',
+        // 필요한 데이터 전송
+      })
+
+      // 성공 시 모달 표시
+      setIsApplyComplete(true)
+    } catch (error) {
+      console.error('지원 실패:', error)
+    }
   }
 
   return (
@@ -159,11 +176,19 @@ export default function JobDetailPage({ params }: PageProps) {
         {/* 지원하기 버튼 */}
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4">
           <div className="max-w-4xl mx-auto">
-            <button className="w-full py-3 bg-primary text-white rounded-lg hover:bg-primary-dark">
+            <button
+              onClick={handleApply}
+              className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
               지원하기
             </button>
           </div>
         </div>
+
+        <ApplyCompleteModal
+          isOpen={isApplyComplete}
+          onClose={() => setIsApplyComplete(false)}
+        />
       </div>
     </div>
   )

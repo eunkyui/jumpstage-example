@@ -9,6 +9,8 @@ import {
   ChatBubbleLeftRightIcon,
   ClipboardDocumentListIcon
 } from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import CareerVerificationButton from '@/components/career/CareerVerificationButton'
 
 type ProfileSection = 'info' | 'career' | 'education' | 'skills' | 'reviews' | 'returnship'
 
@@ -33,6 +35,7 @@ type ReturnshipStatus = {
 
 export default function ProfilePage() {
   const [activeSection, setActiveSection] = useState<ProfileSection>('info')
+  const [activeTab, setActiveTab] = useState<'career' | 'education'>('career')
 
   const renderSection = () => {
     switch (activeSection) {
@@ -104,6 +107,21 @@ export default function ProfilePage() {
         <div className="bg-white rounded-lg shadow-sm p-6">
           {renderSection()}
         </div>
+
+        {activeTab === 'reviews' && (
+          <div className="mt-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">동료 리뷰</h2>
+              <Link
+                href="/profile/verify"
+                className="text-primary hover:text-primary-dark"
+              >
+                리뷰 요청하기
+              </Link>
+            </div>
+            {/* 기존 리뷰 관련 내용 */}
+          </div>
+        )}
       </div>
     </div>
   )
@@ -126,7 +144,7 @@ function BasicInfo() {
           <label className="block text-sm font-medium text-gray-700">자기소개</label>
           <div className="mt-1 space-y-2 text-gray-600">
             <p>
-              5년차 프로덕트 매니저로서 사용자 중심의 제품 개발에 열정을 가지고 있습니다.
+              5년차 프로덕트 매니저로서 사용자 중심의 제품 개발 열정을 가지고 있습니다.
               데이터 기반의 의사결정과 다양한 이해관계자들과의 원활한 커뮤니케이션을 통해
               성공적인 프로젝트들을 이끌어왔습니다.
             </p>
@@ -167,6 +185,8 @@ function BasicInfo() {
 }
 
 function CareerHistory() {
+  const [isVerified, setIsVerified] = useState<boolean>(false)
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -193,6 +213,20 @@ function CareerHistory() {
           </p>
         </div>
       </div>
+        {/* 경력 인증 상태 표시 */}
+        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="text-lg font-semibold">경력 인증 상태</h3>
+              <p className="text-sm text-gray-600 mt-1">
+                {isVerified ? '인증완료' : '미인증'}
+              </p>
+            </div>
+            {!isVerified && (
+              <CareerVerificationButton />
+            )}
+          </div>
+        </div>
     </div>
   )
 }
@@ -279,7 +313,7 @@ function Reviews() {
     {
       id: '3',
       name: '김마케팅',
-      position: '이전 직장 / 마케팅 매니저',
+      position: '이전 직장 / 마케팅 매니',
       company: '디지털컴퍼니',
       period: '2017-2019',
       rating: 4,
@@ -300,9 +334,14 @@ function Reviews() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">동료 리뷰</h2>
-        <button className="text-primary hover:text-primary-dark">리뷰 요청하기</button>
+        <Link
+          href="/profile/verify"
+          className="text-primary hover:text-primary-dark"
+        >
+          리뷰 요청하기
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

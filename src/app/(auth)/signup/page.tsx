@@ -1,296 +1,218 @@
 'use client'
 
-import React, { useState } from 'react'
-import Link from 'next/link'
+import { useState } from 'react'
+import EmailInput from '@/components/common/input/EmailInput'
+import JobCategorySelect from '@/components/common/select/JobCategorySelect'
 import { useRouter } from 'next/navigation'
+// import { signUp } from '@/lib/auth/signup'
 
-type CareerStatus = '신입' | '1-3년' | '4-7년' | '8년 이상'
-type BreakPeriod = '해당없음' | '1년미만' | '1-3년' | '3년이상'
-type WorkPreference = {
-  workType: string[];
-  workHours: string;
-  workLocation: string[];
-  workStyle: string[];
-  salary: string;
-  priority: string;
+interface SignUpFormData {
+  email: string
+  password: string
+  passwordConfirm: string
+  name: string
+  phone: string
+  careerStatus: 'EXPERIENCED' | 'NEWCOMER'
+  breakPeriod: string
+  lastJob: string
+  desiredJob: string
+  jobCategory: string
+  agreeTerms: boolean
+  agreePrivacy: boolean
+  workPreference: 'FULLTIME' | 'PARTTIME'
 }
 
-export default function SignupPage() {
+export default function SignUpPage() {
   const router = useRouter()
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<SignUpFormData>({
     email: '',
     password: '',
     passwordConfirm: '',
     name: '',
     phone: '',
-    careerStatus: '' as CareerStatus,
-    breakPeriod: '' as BreakPeriod,
+    careerStatus: 'EXPERIENCED',
+    breakPeriod: 'LESS_THAN_1YEAR',
     lastJob: '',
     desiredJob: '',
+    jobCategory: '',
     agreeTerms: false,
     agreePrivacy: false,
-    workPreference: {
-      workType: [], // 복수 선택 가능
-      workHours: '',
-      workLocation: [], // 복수 선택 가능
-      workStyle: [], // 복수 선택 가능
-      salary: '',
-      priority: ''
-    } as WorkPreference
+    workPreference: 'FULLTIME'
   })
+
+  const handleInputChange = (name: keyof SignUpFormData, value: string | boolean) => {
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: 회원가입 로직 구현
-    console.log('Signup attempt:', formData)
-  }
 
-  const toggleWorkType = (type: string) => {
-    setFormData(prev => ({
-      ...prev,
-      workPreference: {
-        ...prev.workPreference,
-        workType: prev.workPreference.workType.includes(type)
-          ? prev.workPreference.workType.filter(t => t !== type)
-          : [...prev.workPreference.workType, type]
-      }
-    }))
+    try {
+      // await signUp(formData)
+      router.push('/')
+    } catch (error) {
+      console.error('회원가입 실패:', error)
+    }
   }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">회원가입</h2>
-          <p className="mt-2 text-gray-600">
-            이미 계정이 있으신가요?{' '}
-            <Link href="/login" className="text-primary hover:text-primary-dark">
-              로그인
-            </Link>
+      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md p-8">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-gray-900">회원가입</h1>
+          <p className="mt-2 text-sm text-gray-600">
+            경력 정보를 입력하고 맞춤 채용 정보를 받아보세요
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-lg shadow">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* 기본 정보 섹션 */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold">기본 정보</h3>
-            <div className="grid grid-cols-1 gap-4">
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold text-gray-900 border-b pb-2">기본 정보</h2>
+
+            <div className="grid grid-cols-1 gap-6">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   이메일
                 </label>
-                <input
-                  type="email"
-                  id="email"
-                  required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+                <EmailInput
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(value) => handleInputChange('email', value)}
                 />
               </div>
+
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   비밀번호
                 </label>
                 <input
                   type="password"
-                  id="password"
-                  required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) => handleInputChange('password', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="영문, 숫자 포함 8자 이상"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  비밀번호 확인
+                </label>
+                <input
+                  type="password"
+                  value={formData.passwordConfirm}
+                  onChange={(e) => handleInputChange('passwordConfirm', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  이름
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  연락처
+                </label>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => handleInputChange('phone', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="'-' 없이 입력해주세요"
                 />
               </div>
             </div>
           </div>
 
           {/* 경력 정보 섹션 */}
-          <div className="space-y-4 pt-6">
-            <h3 className="text-xl font-semibold">경력 정보</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-6 pt-6">
+            <h2 className="text-xl font-semibold text-gray-900 border-b pb-2">경력 정보</h2>
+
+            <div className="grid grid-cols-1 gap-6">
               <div>
-                <label htmlFor="careerStatus" className="block text-sm font-medium text-gray-700">
-                  경력 기간
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  경력 상태
                 </label>
                 <select
-                  id="careerStatus"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
                   value={formData.careerStatus}
-                  onChange={(e) => setFormData({ ...formData, careerStatus: e.target.value as CareerStatus })}
+                  onChange={(e) => handleInputChange('careerStatus', e.target.value as 'EXPERIENCED' | 'NEWCOMER')}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="">선택해주세요</option>
-                  <option value="신입">신입</option>
-                  <option value="1-3년">1-3년</option>
-                  <option value="4-7년">4-7년</option>
-                  <option value="8년 이상">8년 이상</option>
+                  <option value="EXPERIENCED">경력</option>
+                  <option value="NEWCOMER">신입</option>
                 </select>
               </div>
+
               <div>
-                <label htmlFor="breakPeriod" className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   경력 단절 기간
                 </label>
                 <select
-                  id="breakPeriod"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
                   value={formData.breakPeriod}
-                  onChange={(e) => setFormData({ ...formData, breakPeriod: e.target.value as BreakPeriod })}
+                  onChange={(e) => handleInputChange('breakPeriod', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="">선택해주세요</option>
-                  <option value="해당없음">해당없음</option>
-                  <option value="1년미만">1년 미만</option>
-                  <option value="1-3년">1-3년</option>
-                  <option value="3년이상">3년 이상</option>
+                  <option value="LESS_THAN_1YEAR">1년 미만</option>
+                  <option value="LESS_THAN_3YEARS">1년 이상 3년 미만</option>
+                  <option value="LESS_THAN_5YEARS">3년 이상 5년 미만</option>
+                  <option value="LESS_THAN_7YEARS">5년 이상 7년 미만</option>
+                  <option value="MORE_THAN_7YEARS">7년 이상</option>
                 </select>
               </div>
-              <div className="md:col-span-2">
-                <label htmlFor="lastJob" className="block text-sm font-medium text-gray-700">
-                  최종 직무
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  직군 선택
+                </label>
+                <JobCategorySelect
+                  onChange={(value) => handleInputChange('jobCategory', value)}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  이전 직무
                 </label>
                 <input
                   type="text"
-                  id="lastJob"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
                   value={formData.lastJob}
-                  onChange={(e) => setFormData({ ...formData, lastJob: e.target.value })}
+                  onChange={(e) => handleInputChange('lastJob', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-            </div>
-          </div>
 
-          {/* 희망 근무 스타일 섹션 추가 */}
-          <div className="space-y-4 pt-6">
-            <h3 className="text-xl font-semibold">희망 근무 스타일</h3>
-
-            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  희망 근무 형태 (복수 선택 가능)
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  희망 직무
                 </label>
-                <div className="flex flex-wrap gap-2">
-                  {['정규직', '계약직', '시간제', '리턴십'].map(type => (
-                    <button
-                      key={type}
-                      type="button"
-                      onClick={() => toggleWorkType(type)}
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        formData.workPreference.workType.includes(type)
-                          ? 'bg-primary text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
+                <input
+                  type="text"
+                  value={formData.desiredJob}
+                  onChange={(e) => handleInputChange('desiredJob', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  희망 근무 시간
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  근무 형태
                 </label>
                 <select
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
-                  value={formData.workPreference.workHours}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    workPreference: {
-                      ...prev.workPreference,
-                      workHours: e.target.value
-                    }
-                  }))}
+                  value={formData.workPreference}
+                  onChange={(e) => handleInputChange('workPreference', e.target.value as 'FULLTIME' | 'PARTTIME')}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="">선택해주세요</option>
-                  <option value="full">주 40시간 (풀타임)</option>
-                  <option value="part30">주 30시간</option>
-                  <option value="part20">주 20시간</option>
-                  <option value="part15">주 15시간 미만</option>
-                  <option value="flexible">시간 협의 가능</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  선호하는 근무 방식 (복수 선택 가능)
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    '유연근무제',
-                    '재택근무',
-                    '하이브리드',
-                    '고정 출퇴근',
-                  ].map(style => (
-                    <button
-                      key={style}
-                      type="button"
-                      onClick={() => {
-                        setFormData(prev => ({
-                          ...prev,
-                          workPreference: {
-                            ...prev.workPreference,
-                            workStyle: prev.workPreference.workStyle.includes(style)
-                              ? prev.workPreference.workStyle.filter(s => s !== style)
-                              : [...prev.workPreference.workStyle, style]
-                          }
-                        }))
-                      }}
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        formData.workPreference.workStyle.includes(style)
-                          ? 'bg-primary text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      {style}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  우선순위
-                </label>
-                <select
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
-                  value={formData.workPreference.priority}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    workPreference: {
-                      ...prev.workPreference,
-                      priority: e.target.value
-                    }
-                  }))}
-                >
-                  <option value="">선택해주세요</option>
-                  <option value="work-life">워라밸</option>
-                  <option value="salary">급여</option>
-                  <option value="growth">성장 가능성</option>
-                  <option value="stability">고용 안정성</option>
-                  <option value="location">출퇴근 거리</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  희망 연봉 수준
-                </label>
-                <select
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
-                  value={formData.workPreference.salary}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    workPreference: {
-                      ...prev.workPreference,
-                      salary: e.target.value
-                    }
-                  }))}
-                >
-                  <option value="">선택해주세요</option>
-                  <option value="~3000">3,000만원 미만</option>
-                  <option value="3000-4000">3,000~4,000만원</option>
-                  <option value="4000-5000">4,000~5,000만원</option>
-                  <option value="5000-6000">5,000~6,000만원</option>
-                  <option value="6000+">6,000만원 이상</option>
-                  <option value="negotiable">협의 가능</option>
+                  <option value="FULLTIME">정규직</option>
+                  <option value="PARTTIME">계약직</option>
                 </select>
               </div>
             </div>
@@ -298,44 +220,39 @@ export default function SignupPage() {
 
           {/* 약관 동의 섹션 */}
           <div className="space-y-4 pt-6">
-            <div className="flex items-center">
-              <input
-                id="agreeTerms"
-                type="checkbox"
-                className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                checked={formData.agreeTerms}
-                onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })}
-              />
-              <label htmlFor="agreeTerms" className="ml-2 block text-sm text-gray-900">
-                <Link href="#" className="text-primary hover:text-primary-dark">
-                  이용약관
-                </Link>
-                에 동의합니다
+            <h2 className="text-xl font-semibold text-gray-900 border-b pb-2">약관 동의</h2>
+
+            <div className="space-y-2">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.agreeTerms}
+                  onChange={(e) => handleInputChange('agreeTerms', e.target.checked)}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <span className="text-sm text-gray-700">이용약관 동의 (필수)</span>
               </label>
-            </div>
-            <div className="flex items-center">
-              <input
-                id="agreePrivacy"
-                type="checkbox"
-                className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                checked={formData.agreePrivacy}
-                onChange={(e) => setFormData({ ...formData, agreePrivacy: e.target.checked })}
-              />
-              <label htmlFor="agreePrivacy" className="ml-2 block text-sm text-gray-900">
-                <Link href="#" className="text-primary hover:text-primary-dark">
-                  개인정보 처리방침
-                </Link>
-                에 동의합니다
+
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.agreePrivacy}
+                  onChange={(e) => handleInputChange('agreePrivacy', e.target.checked)}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <span className="text-sm text-gray-700">개인정보 처리방침 동의 (필수)</span>
               </label>
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-          >
-            가입하기
-          </button>
+          <div className="pt-6">
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            >
+              가입하기
+            </button>
+          </div>
         </form>
       </div>
     </div>
